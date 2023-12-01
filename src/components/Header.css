@@ -1,0 +1,11 @@
+h1 {
+    text-align: left;
+    margin: 20px;
+}
+
+#header-wrapper {
+    background-color: lightgrey;
+    padding: 10px;
+    color: darkgreen;
+    font-family: serif;
+}
