@@ -8,13 +8,12 @@ const API_KEY = "0e2ebad73646caa2df0be378bda7456a" //Ordinarily this would go in
 
 function App(): JSX.Element {
   const [searchTerm, setSearchString] = useState<string>('')
-  const [city, setCity] = useState<cityInfoType | null>(null)
+  const [city, setCity] = useState<cityInfoType[]>([])
 
-  const getCity = (value:string) => {
+  const getCities = (value:string) => {
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${value}&limit=5&appid=${API_KEY}`)
     .then((res) => res.json())
     .then((data) => setCity(data))
-    console.log(city)
   }
 
   const onInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -22,8 +21,27 @@ function App(): JSX.Element {
     const value = event.target.value.trim()
     setSearchString(value)
 
+    getCities(value)
     console.log(`value: ${value}`)
   }
+
+  const handleClick = () => {
+    if (!city) return
+    getWeather(city[0])
+  }
+
+  const getWeather = (data: cityInfoType) => {
+    console.log(data.lat)
+    fetch(
+      `http://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lon}&appid=${API_KEY}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((e) => console.log({ e }))
+  }
+
 
   return (
     <div className="App">
@@ -35,7 +53,7 @@ function App(): JSX.Element {
           onChange={onInputChange}
         />
         <button
-        onClick={() => getCity(searchTerm)}
+          onClick={() => handleClick()}
         >
           Search
         </button>
